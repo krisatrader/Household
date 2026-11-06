@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="hu">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#2f6f5e">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Háztartás">
+<title>Háztartás</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header class="topbar">
+  <button id="back" class="icon-btn hidden" aria-label="Vissza">←</button>
+  <h1 id="title">Háztartás</h1>
+  <button id="menu" class="icon-btn" aria-label="Beállítások">⋯</button>
+</header>
+<main id="app"></main>
+<div id="modal" class="modal hidden"><div class="modal-box" id="modal-body"></div></div>
+<input type="file" id="import-file" accept="application/json" hidden>
+<div id="toast" class="toast hidden"></div>
+<script src="app.js"></script>
+<script src="drive.js"></script>
+</body>
+</html>
