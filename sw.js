@@ -1,5 +1,5 @@
 // Háztartás – offline gyorsítótár. Új verziónál növeld a CACHE nevét.
-const CACHE = 'hhm-v2';
+const CACHE = 'hhm-v3';
 const ASSETS = ['./', 'index.html', 'styles.css', 'app.js', 'drive.js', 'manifest.webmanifest',
   'icons/icon-192.png', 'icons/icon-512.png'];
 

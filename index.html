@@ -3,7 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#2f6f5e">
+<meta name="theme-color" content="#f9f9f9" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Háztartás">
 <title>Háztartás</title>
@@ -14,11 +15,27 @@
 </head>
 <body>
 <header class="topbar">
-  <button id="back" class="icon-btn hidden" aria-label="Vissza">←</button>
+  <button id="back" class="nav-btn hidden" aria-label="Vissza">‹ Témák</button>
   <h1 id="title">Háztartás</h1>
-  <button id="menu" class="icon-btn" aria-label="Beállítások">⋯</button>
+  <button id="menu" class="icon-btn" aria-label="Beállítások">•••</button>
 </header>
 <main id="app"></main>
+
+<nav class="tabbar" id="tabbar">
+  <button data-act="go" data-id="home" aria-label="Ma">
+    <svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>
+    <span>Ma</span>
+  </button>
+  <button data-act="go" data-id="topics" aria-label="Témák">
+    <svg viewBox="0 0 24 24"><rect x="3" y="3" width="8" height="8" rx="2"/><rect x="13" y="3" width="8" height="8" rx="2"/><rect x="3" y="13" width="8" height="8" rx="2"/><rect x="13" y="13" width="8" height="8" rx="2"/></svg>
+    <span>Témák</span>
+  </button>
+  <button data-act="menu" aria-label="Beállítások">
+    <svg viewBox="0 0 24 24"><circle cx="6" cy="12" r="1.6" fill="currentColor"/><circle cx="12" cy="12" r="1.6" fill="currentColor"/><circle cx="18" cy="12" r="1.6" fill="currentColor"/></svg>
+    <span>Több</span>
+  </button>
+</nav>
+
 <div id="modal" class="modal hidden"><div class="modal-box" id="modal-body"></div></div>
 <input type="file" id="import-file" accept="application/json" hidden>
 <div id="toast" class="toast hidden"></div>

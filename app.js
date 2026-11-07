@@ -156,8 +156,8 @@ function itemRow(i) {
 
 function topicCard(t) {
   const next = t.tasks.length ? t.tasks.map(nextDue).sort()[0] : '';
-  return `<button class="card topic" data-act="open-topic" data-id="${t.id}">
-    <span class="icon">${esc(t.icon)}</span>
+  return `<button class="topic" data-act="open-topic" data-id="${t.id}">
+    <span class="art">${esc(t.icon)}</span>
     <span class="grow"><strong>${esc(t.name)}</strong>
       <span class="muted small block">${t.tasks.length} feladat · ${t.documents.length} dok. · ${t.costs.length} költség</span>
       ${next ? `<span class="small block ${statusOf(next)}">Következő feladat: ${fmtDate(next)}</span>` : ''}
@@ -166,16 +166,20 @@ function topicCard(t) {
 
 function renderHome() {
   const soon = collectItems().filter(i => daysUntil(i.date) <= 30);
-  const emptyState = `<div class="card empty"><p>Még nincs téma. Hozz létre egyet, vagy tölts be példa adatokat.</p>
-    <button class="btn" data-act="seed">Példa adatok betöltése</button></div>`;
   $('#app').innerHTML = `
     <section>
       <h2>Következő 30 nap</h2>
-      ${soon.length ? soon.map(itemRow).join('') : '<p class="muted">Nincs esedékes feladat. 🎉</p>'}
-    </section>
+      <div class="group">${soon.length ? soon.map(itemRow).join('') : '<p class="muted empty-line">Nincs esedékes feladat. 🎉</p>'}</div>
+    </section>`;
+}
+
+function renderTopics() {
+  const emptyState = `<div class="card"><p>Még nincs téma. Hozz létre egyet, vagy tölts be példa adatokat.</p>
+    <button class="btn" data-act="seed">Példa adatok betöltése</button></div>`;
+  $('#app').innerHTML = `
     <section>
-      <div class="row between"><h2>Témák</h2><button class="btn" data-act="new-topic">+ Új téma</button></div>
-      ${state.topics.length ? `<div class="grid">${state.topics.map(topicCard).join('')}</div>` : emptyState}
+      <div class="row between"><h2>Témák</h2><button class="btn small" data-act="new-topic">+ Új téma</button></div>
+      ${state.topics.length ? `<div class="group">${state.topics.map(topicCard).join('')}</div>` : emptyState}
     </section>`;
 }
 
@@ -240,7 +244,7 @@ function renderTopic(t) {
   const current = TABS.find(x => x.id === tab);
   $('#app').innerHTML = `
     <div class="topic-head">
-      <span class="icon big">${esc(t.icon)}</span>
+      <span class="art big">${esc(t.icon)}</span>
       <h2 class="grow">${esc(t.name)}</h2>
       <button class="btn ghost small" data-act="edit-topic" data-id="${t.id}">Téma szerk.</button>
       <button class="btn danger small" data-act="del-topic" data-id="${t.id}">Téma törlése</button>
@@ -248,20 +252,22 @@ function renderTopic(t) {
     <nav class="tabs">${TABS.map(x => `<button class="tab ${x.id === tab ? 'active' : ''}" data-act="tab" data-id="${x.id}">${x.label}</button>`).join('')}</nav>
     <div class="row between"><h3>${current.label}</h3>
       <button class="btn" data-act="add" data-col="${current.col}" data-id="${t.id}">+ Hozzáad</button></div>
-    <div id="list">${LIST[tab](t)}</div>`;
+    <div id="list" class="group">${LIST[tab](t)}</div>`;
 }
 
 function render() {
   const p = location.hash.replace(/^#\/?/, '').split('/');
   const topic = p[0] === 'topic' && p[1] ? topicById(p[1]) : null;
+  if (p[0] === 'topic' && !topic) { location.hash = '#/topics'; return; }
+  const section = p[0] === 'topics' || topic ? 'topics' : 'home';
+  document.querySelectorAll('#tabbar [data-act="go"]').forEach(b => b.classList.toggle('active', b.dataset.id === section));
   $('#back').classList.toggle('hidden', !topic);
-  if (!topic) {
-    $('#title').textContent = 'Háztartás';
-    if (p[0] === 'topic') { location.hash = ''; return; }
-    return renderHome();
+  if (topic) {
+    $('#title').textContent = topic.name;
+    return renderTopic(topic);
   }
-  $('#title').textContent = `${topic.icon} ${topic.name}`;
-  renderTopic(topic);
+  $('#title').textContent = section === 'topics' ? 'Témák' : 'Háztartás';
+  return section === 'topics' ? renderTopics() : renderHome();
 }
 
 /* ---------- Modális ablakok és űrlapok ---------- */
@@ -503,6 +509,7 @@ document.addEventListener('click', async e => {
       if (f) { await navigator.clipboard?.writeText(f.item.value); toast('Vágólapra másolva'); }
       break;
     }
+    case 'go': location.hash = id === 'topics' ? '#/topics' : ''; break;
     case 'menu': openMenu(); break;
     case 'export': exportData(); break;
     case 'import': $('#import-file').click(); break;
@@ -528,7 +535,7 @@ document.addEventListener('click', async e => {
 });
 
 $('#menu').addEventListener('click', openMenu);
-$('#back').addEventListener('click', () => { location.hash = ''; });
+$('#back').addEventListener('click', () => { location.hash = '#/topics'; });
 window.addEventListener('hashchange', render);
 
 // Felület a drive.js modul számára
